@@ -1,0 +1,286 @@
+---
+title: "DATA_605_Assign_15_DThonn"
+file: DATA_605_Assign_15_DThonn
+name: Daniel Thonn
+output:
+  html_document: default
+  pdf_document: default
+course: DATA 605 CUNY MSDA program
+---
+
+** DATA_605_Assignment 15 - Calculus 3 - MultiVariable **
+
+http://rpubs.com/danthonn/388617
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+``````{r, echo=TRUE}
+if (!require(stats)) install.packages("stats")
+library(stats)
+
+if (!require(pracma)) install.packages("pracma")
+library(pracma)
+
+if (!require(Deriv)) install.packages("Deriv")
+library(Deriv)
+
+
+```
+
+
+Assignment 15:
+
+** Question-1 **
+
+1). Find the equation of the regression line for the given points. Round any final values to the nearest hundredth, if necessary.
+( 5.6, 8.8 ), ( 6.3, 12.4 ), ( 7, 14.8 ), ( 7.7, 18.2 ), ( 8.4, 20.8 )
+
+
+
+``````{r, echo=TRUE}
+# check using summary function
+
+# obtain the regression model
+a <- c(5.6, 6.3, 7, 7.7, 8.4)
+b <- c(8.8, 12.4, 14.8, 18.2, 20.8)
+regression1 <- lm(b~a)
+summary(regression1)
+
+# print the data and regression line
+print(regression1)
+plot(a,b, main = "X vs. Y", xlab = "X", ylab = "Y")
+abline(regression1, col = 'blue', lty = 2)
+
+# answer-1a: equation of the regression line (from summary info)
+#b = -14.80 + 4.26 * a
+
+```
+
+
+** Question-2 **
+
+2). Find all local maxima, local minima, and saddle points for the function given below. Write your answer(s) in the form
+( x, y, z ). Separate multiple points with a comma.
+
+$$f(x,y) = 24x - 6xy^2 - 8y^3$$
+
+$$f(x,y) = z = 24x - 6xy^2 - 8y^3$$
+
+partial derivative with respect to x:
+
+$$\frac{\partial z}{\partial x} = 24 - 6y^2$$
+partial derivative with respect to y:
+
+$$\frac{\partial z}{\partial y} = -12xy - 24y^2$$
+critical points, when 
+$$\nabla z = \vec{0}$$
+
+with respect to x:
+$$\frac{\partial z}{\partial x} = 24 - 6y^2 = 0$$ $$4 - y^2 = 0$$ $$ y^2 = 4$$ $$ y = -2 \text{ and } 2$$
+
+with respect to y:
+$$\frac{\partial z}{\partial y} = -12xy - 24y^2 = 0$$ 
+$$xy + 2y^2 = 0$$ 
+sub in $$y = -2$$
+
+
+
+$$x(-2) + 2(-2)^2 = 0$$ $$-2x + 8 = 0$$ $$x = 4$$
+
+
+sub in $$y = 2$$:
+$$x(2) + 2(2)^2 = 0$$ $$2x + 8 = 0$$
+$$x = -4$$ 
+
+The critical points to this equation are: 
+$$(-4, 2)$$
+
+
+$$(4, -2)$$
+
+
+
+Check critical points For minima, maxima or saddles. 
+Take the partial second derivative for each critical point to find the concavity. 
+For concavity = positive, the critical point is a minima 
+For concavity = negative, the critical point is a maxima. 
+
+with respect to x:
+$$\frac{\partial^2 z}{\partial x^2} = 0$$
+
+with respect to y:
+$$\frac{\partial^2 z}{\partial y^2} = -12x - 48y^2$$
+Now let's find $$f_{xy}$$
+
+$$f_{xy} = -12y$$
+Check if these points are maxima, minima, or saddle points.
+Use the equation below:
+
+$$D = f_{xx}(x,y) f_{yy}(x,y) - f_{xy}(x,y)^2 \text{ where D > 0: max or min; D < 0: saddle point}$$
+$$D = 0 * (-12x - 48y^2) - (-12y)^2 = 12y^2$$ 
+
+AT critical point 
+$$(x,y) = (-4,2)$$
+
+
+$$D = 12(2)^2 > 0 \text{ and } \frac{\partial^2 z}{\partial y^2}(-4,2) = -12(-4) - 48(2)^2 = -144$$ 
+
+
+So $(-4,2)$ has a negative concavity and $D > 0$, this point is a maxima.
+
+
+At critical point $(x,y) = (4,-2)$:
+
+
+$$D = 12(-2)^2 > 0 \text{ and } \frac{\partial^2 z}{\partial y^2}(4,-2) = -12(4) - 48(-2)^2 = -240 $$
+
+$$(4,-2)$$ 
+
+has a negative concavity 
+and $$H >0$$
+
+
+
+this point is also another maxima.
+
+
+
+
+
+``````{r, echo=TRUE}
+
+
+```
+
+** Question-3 **
+
+3). A grocery store sells two brands of a product, the "house" brand and a "name" brand. The manager estimates that if she
+sells the "house" brand for x dollars and the "name" brand for y dollars, she will be able to sell 81  21x + 17y units of the
+"house" brand and 40 + 11x  23y units of the "name" brand.
+
+Step 1. Find the revenue function R ( x, y ).
+
+$$R(x,y) = x * (81 - 21x + 17y) + y * (40 + 11x - 23y)$$ 
+
+$$R(x,y) = 81x - 21x^2 + 17xy + 40y +11xy - 23y^2$$ 
+
+$$R(x,y) = -21x^2 - 23y^2 + 81x + 40y + 28xy$$
+
+Step 2. What is the revenue if she sells the "house" brand for $2.30 and the "name" brand for $4.10?
+
+
+
+``````{r, echo=TRUE}
+
+x <- 2.3
+y <- 4.1
+
+func_xy <- function(x, y) -21 * x^2 + 81 * x + 28 * x * y + 40 * y - 23 * y^2
+
+func_xy(x, y)
+# Answer-3
+# [1] 116.62
+
+```
+
+** Question-4 **
+
+A company has a plant in Los Angeles and a plant in Denver. The firm is committed to produce a total of 96 units of a
+product each week. The total weekly cost is given by 
+C(x, y) = 1/6 x2 + 1/6 y2 + 7x + 25y + 700, 
+where x is the number of units produced in Los Angeles and y is the number of units produced in Denver. How many units should be produced in each plant to minimize the total weekly cost?
+
+$$x + y = 96$$
+
+$$y = 96 - x$$ 
+
+Sub y into the formula $C(x,y)$.
+
+
+$$C(x,y) = \frac{1}{6} x^2 + \frac{1}{6} y^2 + 7x + 25y + 700$$ 
+$$C(x,y) = \frac{1}{6} x^2 + \frac{1}{6} (96 - x)^2 + 7x + 25(96-x) + 700$$ 
+$$C(x) = \frac{1}{6} x^2 + \frac{9216 -192x + x^2}{6} + 7x + 2400 - 25x + 700$$ 
+$$C(x) = \frac{1}{6} x^2 + 1536 - 32x + \frac{x^2}{6} + 7x + 2400 - 25x + 700$$ 
+$$C(x) = \frac{1}{3} x^2 - 50x + 4636$$ 
+Find the critical points in function $$C(x)$$:
+$$C'(x) = \frac{2}{3} x - 50$$ 
+$$\frac{2}{3} x - 50 = 0$$ 
+$$x = 75$$ 
+Therefore, plug in for x:
+
+$$75 + y = 96$$ 
+$$y = 21$$
+
+``````{r, echo=TRUE}
+
+# check in R:
+C_x <- function(x) 1/6 * x^2 + 1/6 * (96 - x)^2 + 7 * x + 25 * (96 - x) + 700
+C_x_pr <- Deriv(C_x)
+
+s <- seq(-500, 500, by = 1)
+plot(s, C_x_pr(s), type = "l", col = "red")
+abline(0, 0)
+(x <- uniroot(C_x_pr, c(-500, 500))$root)
+## [1] 75
+
+
+
+
+
+```
+
+** Question-5 **
+
+Evaluate the double integral on the given region.
+
+$$\int \int_R (e^{8x + ey}) dA; R: 2 \leq x \leq 4 \text{ and } 2 \leq y \leq 4$$ 
+
+Write your answer in exact form without decimals.
+
+Solution: 
+
+show the double integral as:
+$$\int_{y = 2}^{y = 4} \int_{x = 2}^{x = 4} (e^{8x + ey}) \text{ }dx \text{ }dy = \int_{y = 2}^{y = 4} \int_{x = 2}^{x = 4} (e^{8x}e^{ey}) \text{ }dx \text{ }dy$$ 
+with $$dA = dx \text{ } dy$$
+
+complete the integration with U substitution.
+$$\text{Let u } = 8x$$
+
+
+$$\frac{du}{dx} = 8 \text{ equals } du = 8 \text{ }dx$$
+sub,
+$$\int_{y = 2}^{y = 4} \int_{u = 16}^{u = 32} e^{ey}e^u * \frac{1}{8} du \text{ } dy = \int_{y = 2}^{y = 4} \frac{e^{ey}}{8} \int_{u = 16}^{u = 32} e^u du \text{ }dy$$
+
+
+
+
+
+integrate with respect to u:
+
+$$\int_{u = 16}^{u = 32} e^u du = e^u|_{16}^{32} = e^{32} - e^{16}$$
+integrate with respect to y with u substitution:
+
+
+$$\int_{y=2}^{y=4} \frac{e^{32} - e^{16}}{8} e^{ey} \text{ }dy = \frac{e^{32} - e^{16}}{8} \int_{y=2}^{y=4} e^{ey} \text{ } dy$$
+and $$u = ey$$ 
+
+Therefore, $$\frac{du}{dy} = e$$
+
+
+and, $$du = e \text{ } dy$$
+
+
+
+$$\frac{e^{32} - e^{16}}{8} \int_{u=2e}^{u=4e} \frac{1}{e}e^{u} \text{ } du = \frac{e^{32} - e^{16}}{8e} \int_{u=2e}^{u=4e} e^{u} \text{ } du$$
+$$= (\frac{e^{31} - e^{15}}{8}) e^u|_{2e}^{4e} = (\frac{e^{31} - e^{15}}{8}) (e^{4e}-e^{2e}) + c$$
+Solution: 
+
+
+$$(\frac{e^{31} - e^{15}}{8}) (e^{4e}-e^{2e}) + c$$
+
+
+** END **
+
+
